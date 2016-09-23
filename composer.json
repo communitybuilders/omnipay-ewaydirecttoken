@@ -1,0 +1,30 @@
+{
+    "name": "communitybuilders/omnipay-ewaydirecttoken",
+    "type": "library",
+    "description": "Eway direct driver extension that adds ability to make create card requests for for the Omnipay payment processing library",
+    "keywords": [
+        "quickstream",
+        "gateway",
+        "merchant",
+        "omnipay",
+        "pay",
+        "payment",
+        "purchase"
+    ],
+    "homepage": "https://github.com/communitybuilders/omnipay-ewaydirecttoken",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Dejan Lukic",
+            "email": "dejan.lukic@communitybuilders.com.au"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "CommunityBuilders\\Omnipay\\EwayDirectToken": "src/"
+        }
+    },
+    "require": {
+        "omnipay/eway": "~2.0"
+    }
+}
