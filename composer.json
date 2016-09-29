@@ -26,5 +26,8 @@
     },
     "require": {
         "omnipay/eway": "~2.0"
+    },
+    "require-dev": {
+        "omnipay/tests": "~2.0"
     }
 }

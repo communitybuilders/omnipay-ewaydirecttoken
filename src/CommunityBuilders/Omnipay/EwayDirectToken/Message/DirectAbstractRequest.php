@@ -2,6 +2,8 @@
 
 namespace CommunityBuilders\Omnipay\EwayDirectToken\Message;
 
+use CommunityBuilders\Omnipay\EwayDirectToken\XML\SOAP\Response as SoapResponse;
+use Guzzle\Http\Exception\ServerErrorResponseException;
 use Omnipay\Eway\Message\AbstractRequest;
 
 /**
@@ -10,10 +12,10 @@ use Omnipay\Eway\Message\AbstractRequest;
  */
 abstract class DirectAbstractRequest extends \Omnipay\Eway\Message\DirectAbstractRequest
 {
+    protected $namespace_url = "https://www.eway.com.au/gateway/managedpayment";
+
     public function sendData($data)
     {
-        $soap_client = new \SoapClient($this->getEndpoint(), array("trace" => 1));
-
         $headers = array();
         // Headers in SOAP are grouped. Loop through any header "groups" we may have.
         foreach ($data[ 'headers' ] as $header_group => $header_group_details) {
@@ -35,11 +37,37 @@ abstract class DirectAbstractRequest extends \Omnipay\Eway\Message\DirectAbstrac
 
         // The arguments need to be grouped by function name, or we will
         // produce an empty element for the SOAP function (e.g. <ns1:CreateCustomer />, instead of <ns1:CreateCustomer>{ARGS}</ns1:CreateCustomer>)
-        $arguments = array(
-            $data[ 'soap_function' ] => $data[ 'arguments' ]
-        );
 
-        $result = $soap_client->__soapCall($data[ 'soap_function' ], $arguments, null, $headers);
+        $http_headers = [
+            'Content-Type' => 'text/xml; charset=utf-8',
+            'SOAPAction'   => "{$this->namespace_url}/{$data['soap_function']}"
+        ];
+
+        $soap_body = $this->getSOAPBodyFromData($data[ 'soap_function' ], $data[ 'arguments' ], $headers);
+
+        try {
+            $request = $this->httpClient->post($this->getEndpoint(), $http_headers, $soap_body);
+            $response = $request->send();
+        }catch( ServerErrorResponseException $e ) {
+            // eWay returns a 500 (internal server error) when a SoapFault occurs.
+            // We don't really care for this, and we'll extract the SoapFault when
+            // parsing the SOAP response below.
+            $response = $e->getResponse();
+        }
+
+        $xml_response = new \SimpleXMLElement($response->getBody(true));
+
+        try {
+            // Attempt to parse the SOAP response.
+            $soap_response = new SoapResponse($xml_response);
+            $result = $soap_response->getBody();
+        }catch( \SoapFault $e ) {
+            // SoapFault encountered - set the error message
+            // on our result object and mark as unsuccessful.
+            $result = new \stdClass();
+            $result->ewayTrxnStatus = "False";
+            $result->ewayTrxnError = $e->getMessage();
+        }
 
         if (isset($result->ewayResponse)) {
             // If we got an "ewayResponse" object in our response, point our result at it.
@@ -98,7 +126,7 @@ abstract class DirectAbstractRequest extends \Omnipay\Eway\Message\DirectAbstrac
     {
         return array(
             "eWAYHeader" => array(
-                "namespace" => "https://www.eway.com.au/gateway/managedpayment",
+                "namespace" => $this->namespace_url,
                 "body"      => array(
                     "eWAYCustomerID" => $this->getCustomerId(),
                     "Username"       => $this->getUsername(),
@@ -123,5 +151,40 @@ abstract class DirectAbstractRequest extends \Omnipay\Eway\Message\DirectAbstrac
             'headers'       => isset($headers) ? $headers : $this->getDefaultEwayHeaders(),
             'arguments'     => $args
         );
+    }
+
+    protected function getSOAPBodyFromData($function, $args, array $headers = array())
+    {
+        $soap_xml = new \DOMDocument('1.0', 'UTF-8');
+        $namespace_prefix = "ns1";
+
+        $soap_envelope = $soap_xml->appendChild($soap_xml->createElementNS('http://schemas.xmlsoap.org/soap/envelope/', 'SOAP-ENV:Envelope'));
+        $soap_envelope->setAttribute('xmlns:ns1', $this->namespace_url);
+
+        if (count($headers) > 0) {
+            // Add SOAP headers if we have any.
+            $soap_headers_envelope = $soap_envelope->appendChild($soap_xml->createElement('SOAP-ENV:Header'));
+
+            /** @var \SoapHeader[] $headers */
+            foreach ($headers as $header) {
+                $soap_header = $soap_headers_envelope->appendChild($soap_xml->createElement("{$namespace_prefix}:{$header->name}"));
+
+                foreach ($header->data as $header_name => $header_value) {
+                    $soap_header->appendChild($soap_xml->createElement("{$namespace_prefix}:{$header_name}", $header_value));
+                }
+            }
+        }
+
+        // Add soap body
+        $soap_body_envelope = $soap_envelope->appendChild($soap_xml->createElement("SOAP-ENV:Body"));
+        $soap_body_envelope = $soap_body_envelope->appendChild($soap_xml->createElement("{$namespace_prefix}:{$function}"));
+
+        foreach ($args as $name => $val) {
+            $soap_body_envelope->appendChild($soap_xml->createElement("{$namespace_prefix}:{$name}", $val));
+        }
+
+        $xml = $soap_xml->saveXML();
+
+        return $xml;
     }
 }
