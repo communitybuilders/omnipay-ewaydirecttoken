@@ -2,6 +2,7 @@
 
 namespace CommunityBuilders\Omnipay\EwayDirectToken\Message;
 
+use Omnipay\Common\Exception\InvalidRequestException;
 use Omnipay\Tests\TestCase;
 
 class DirectTokenPurchaseRequestTest extends TestCase
@@ -16,6 +17,13 @@ class DirectTokenPurchaseRequestTest extends TestCase
         $this->request = new DirectTokenPurchaseRequest($this->getHttpClient(), $this->getHttpRequest());
         $this->request->setCustomerReference(self::TEST_CUSTOMER_REFERENCE);
         $this->request->setTestMode(true);
+    }
+
+    public function testNullCustomerReferenceThrowsException()
+    {
+        $this->setExpectedException(InvalidRequestException::class, "The customerReference parameter is required");
+        $this->request->setCustomerReference(null);
+        $this->request->getData();
     }
 
     public function testSendSuccess()

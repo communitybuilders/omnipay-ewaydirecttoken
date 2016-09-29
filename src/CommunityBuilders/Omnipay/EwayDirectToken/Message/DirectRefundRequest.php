@@ -36,4 +36,11 @@ class DirectRefundRequest extends \Omnipay\Eway\Message\DirectRefundRequest
 
         return $sxml;
     }
+
+    public function sendData($data)
+    {
+        $httpResponse = $this->httpClient->post($this->getEndpoint(), null, $data->asXML())->send();
+
+        return $this->response = new DirectResponse($this, $httpResponse->xml());
+    }
 }

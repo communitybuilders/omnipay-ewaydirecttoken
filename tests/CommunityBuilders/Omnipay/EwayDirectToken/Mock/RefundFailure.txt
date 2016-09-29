@@ -1,0 +1,12 @@
+HTTP/1.1 200 OK
+Cache-Control: private
+Content-Length: 305
+Content-Type: text/xml
+Server: Microsoft-IIS/7.5
+X-Powered-By: ASP.NET
+X-EWAY-SERVER: M3
+Date: Thu, 29 Sep 2016 04:03:42 GMT
+Connection: keep-alive
+Set-Cookie: ASPSESSIONIDCWABTAST=EIACPDDCBDALHHKEALEJIGKG; secure; path=/, BIGipServerVirtServerPool-001-SSL=1694698250.47873.0000;secure; path=/
+
+<ewayResponse><ewayTrxnStatus>False</ewayTrxnStatus><ewayTrxnNumber/><ewayTrxnOption1/><ewayTrxnOption2/><ewayTrxnOption3/><ewayAuthCode/><ewayReturnAmount>100</ewayReturnAmount><ewayTrxnError>Error: Original transaction does not exist. Your refund could not be processed.</ewayTrxnError></ewayResponse>

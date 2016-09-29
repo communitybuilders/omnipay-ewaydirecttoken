@@ -26,4 +26,13 @@ class DirectResponse extends \Omnipay\Eway\Message\DirectResponse
 
         return (string)$this->data->CreateCustomerResult;
     }
+
+    public function getAmount()
+    {
+        if (empty($this->data->ewayReturnAmount)) {
+            return null;
+        }
+
+        return (string)$this->data->ewayReturnAmount;
+    }
 }

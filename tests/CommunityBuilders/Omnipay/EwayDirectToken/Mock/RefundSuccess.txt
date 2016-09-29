@@ -1,0 +1,12 @@
+HTTP/1.1 200 OK
+Cache-Control: private
+Content-Length: 302
+Content-Type: text/xml
+Server: Microsoft-IIS/7.5
+X-Powered-By: ASP.NET
+X-EWAY-SERVER: M1
+Date: Thu, 29 Sep 2016 04:01:17 GMT
+Connection: keep-alive
+Set-Cookie: ASPSESSIONIDAWSAASDA=ECFMBEBCKHCOLMPJBCOPGMFJ; secure; path=/, BIGipServerVirtServerPool-001-SSL=16976650.47873.0000;secure; path=/
+
+<ewayResponse><ewayTrxnStatus>True</ewayTrxnStatus><ewayTrxnNumber>13960990</ewayTrxnNumber><ewayTrxnOption1/><ewayTrxnOption2/><ewayTrxnOption3/><ewayAuthCode>920950</ewayAuthCode><ewayReturnAmount>100</ewayReturnAmount><ewayTrxnError>00,Transaction Approved (PHPUnit)</ewayTrxnError></ewayResponse>
