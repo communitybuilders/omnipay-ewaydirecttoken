@@ -1,0 +1,13 @@
+HTTP/1.1 500 Internal Server Error
+Cache-Control: private
+Content-Type: text/xml; charset=utf-8
+Server: Microsoft-IIS/7.5
+X-AspNet-Version: 4.0.30319
+X-Powered-By: ASP.NET
+X-EWAY-SERVER: M3
+Content-Length: 375
+Date: Thu, 29 Sep 2016 03:08:18 GMT
+Connection: close
+Set-Cookie: BIGipServerVirtServerPool-001-SSL=1694698250.47873.0000;secure; path=/
+
+<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><soap:Fault><faultcode>soap:Client</faultcode><faultstring>Amount has to be greater than 0. </faultstring><detail /></soap:Fault></soap:Body></soap:Envelope>

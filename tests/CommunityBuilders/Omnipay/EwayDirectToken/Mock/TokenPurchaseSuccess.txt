@@ -1,0 +1,13 @@
+HTTP/1.1 200 OK
+Cache-Control: private, max-age=0
+Content-Type: text/xml; charset=utf-8
+Server: Microsoft-IIS/7.5
+X-AspNet-Version: 4.0.30319
+X-Powered-By: ASP.NET
+X-EWAY-SERVER: M1
+Content-Length: 597
+Date: Thu, 29 Sep 2016 03:03:37 GMT
+Connection: keep-alive
+Set-Cookie: BIGipServerVirtServerPool-001-SSL=16976650.47873.0000;secure; path=/
+
+<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><ProcessPaymentResponse xmlns="https://www.eway.com.au/gateway/managedpayment"><ewayResponse><ewayTrxnError>00, Transaction Approved (PHPUnit)</ewayTrxnError><ewayTrxnStatus>True</ewayTrxnStatus><ewayTrxnNumber>13960890</ewayTrxnNumber><ewayReturnAmount>100</ewayReturnAmount><ewayAuthCode>232487</ewayAuthCode></ewayResponse></ProcessPaymentResponse></soap:Body></soap:Envelope>
