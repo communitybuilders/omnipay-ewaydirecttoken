@@ -3,7 +3,9 @@
     "type": "library",
     "description": "Eway direct driver extension that adds ability to make create card requests for for the Omnipay payment processing library",
     "keywords": [
-        "quickstream",
+        "eway",
+        "direct",
+        "ewaydirect",
         "gateway",
         "merchant",
         "omnipay",
