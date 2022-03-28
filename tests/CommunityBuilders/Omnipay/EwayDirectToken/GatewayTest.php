@@ -17,7 +17,7 @@ class GatewayTest extends TestCase
     /** @var Gateway */
     protected $gateway;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->gateway = new Gateway($this->getHttpClient(), $this->getHttpRequest());
         $this->gateway->setTestMode(true);

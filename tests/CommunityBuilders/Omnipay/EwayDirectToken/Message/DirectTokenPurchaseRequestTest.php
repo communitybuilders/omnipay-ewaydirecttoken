@@ -12,7 +12,7 @@ class DirectTokenPurchaseRequestTest extends TestCase
     /** @var DirectTokenPurchaseRequest */
     protected $request;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->request = new DirectTokenPurchaseRequest($this->getHttpClient(), $this->getHttpRequest());
         $this->request->setCustomerReference(self::TEST_CUSTOMER_REFERENCE);
@@ -21,7 +21,9 @@ class DirectTokenPurchaseRequestTest extends TestCase
 
     public function testNullCustomerReferenceThrowsException()
     {
-        $this->setExpectedException(InvalidRequestException::class, "The customerReference parameter is required");
+        $this->expectException(InvalidRequestException::class);
+        $this->expectExceptionMessage("The customerReference parameter is required");
+
         $this->request->setCustomerReference(null);
         $this->request->getData();
     }

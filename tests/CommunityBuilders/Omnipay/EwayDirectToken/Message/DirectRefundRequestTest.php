@@ -12,7 +12,7 @@ class DirectRefundRequestTest extends TestCase
     /** @var DirectRefundRequest */
     protected $request;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->request = new DirectRefundRequest($this->getHttpClient(), $this->getHttpRequest());
         $this->request->setRefundPassword("1234");
@@ -24,21 +24,26 @@ class DirectRefundRequestTest extends TestCase
 
     public function testNullRefundPasswordThrowsException()
     {
-        $this->setExpectedException(InvalidRequestException::class, 'The refundPassword parameter is required');
+        $this->expectException(InvalidRequestException::class);
+        $this->expectExceptionMessage('The refundPassword parameter is required');
+
         $this->request->setRefundPassword(null);
         $this->request->getData();
     }
 
     public function testNullTransactionIdThrowsException()
     {
-        $this->setExpectedException(InvalidRequestException::class, 'The transactionId parameter is required');
+        $this->expectException(InvalidRequestException::class);
+        $this->expectExceptionMessage('The transactionId parameter is required');
+
         $this->request->setTransactionId(null);
         $this->request->getData();
     }
 
     public function testGetDataThrowsExceptionForNegativeAmount()
     {
-        $this->setExpectedException(InvalidRequestException::class, "A negative amount is not allowed.");
+        $this->expectException(InvalidRequestException::class);
+        $this->expectExceptionMessage("A negative amount is not allowed.");
 
         $this->request->setAmount(-100.00);
         $this->request->getData();

@@ -14,6 +14,9 @@ abstract class DirectAbstractRequest extends \Omnipay\Eway\Message\DirectAbstrac
 {
     protected $namespace_url = "https://www.eway.com.au/gateway/managedpayment";
 
+    protected $liveEndpoint;
+    protected $testEndpoint;
+
     public function sendData($data)
     {
         $headers = array();
@@ -45,23 +48,15 @@ abstract class DirectAbstractRequest extends \Omnipay\Eway\Message\DirectAbstrac
 
         $soap_body = $this->getSOAPBodyFromData($data[ 'soap_function' ], $data[ 'arguments' ], $headers);
 
-        try {
-            $request = $this->httpClient->post($this->getEndpoint(), $http_headers, $soap_body);
-            $response = $request->send();
-        }catch( ServerErrorResponseException $e ) {
-            // eWay returns a 500 (internal server error) when a SoapFault occurs.
-            // We don't really care for this, and we'll extract the SoapFault when
-            // parsing the SOAP response below.
-            $response = $e->getResponse();
-        }
+        $response = $this->httpClient->request('POST', $this->getEndpoint(), $http_headers, $soap_body);
 
-        $xml_response = new \SimpleXMLElement($response->getBody(true));
+        $xml_response = new \SimpleXMLElement($response->getBody()->getContents());
 
         try {
             // Attempt to parse the SOAP response.
             $soap_response = new SoapResponse($xml_response);
             $result = $soap_response->getBody();
-        }catch( \SoapFault $e ) {
+        } catch (\SoapFault $e) {
             // SoapFault encountered - set the error message
             // on our result object and mark as unsuccessful.
             $result = new \stdClass();

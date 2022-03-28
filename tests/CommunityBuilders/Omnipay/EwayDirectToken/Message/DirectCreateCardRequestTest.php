@@ -2,6 +2,7 @@
 
 namespace CommunityBuilders\Omnipay\EwayDirectToken\Message;
 
+use Omnipay\Common\Exception\InvalidRequestException as InvalidRequestExceptionAlias;
 use Omnipay\Tests\TestCase;
 
 class DirectCreateCardRequestTest extends TestCase
@@ -9,7 +10,7 @@ class DirectCreateCardRequestTest extends TestCase
     /** @var DirectCreateCardRequest */
     protected $request;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->request = new DirectCreateCardRequest($this->getHttpClient(), $this->getHttpRequest());
         $this->request->setCard($this->getValidCard());
@@ -17,11 +18,12 @@ class DirectCreateCardRequestTest extends TestCase
     }
 
     /**
-     * @expectedException \Omnipay\Common\Exception\InvalidRequestException
-     * @expectedExceptionMessage The card parameter is required
      */
     public function testNullCardThrowsException()
     {
+        $this->expectException(InvalidRequestExceptionAlias::class);
+        $this->expectExceptionMessage('The card parameter is required');
+
         $this->request->setCard(null);
         $this->request->getData();
     }
@@ -57,7 +59,7 @@ class DirectCreateCardRequestTest extends TestCase
         $this->request->setCustomerReference("1234 bla bla bla");
         $data = $this->request->getData();
 
-        self::assertContains("1234 bla bla bla", $data[ 'arguments' ][ 'Comments' ]);
+        self::assertStringContainsString("1234 bla bla bla", $data[ 'arguments' ][ 'Comments' ]);
     }
 
     public function testSendSuccess()
